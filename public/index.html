@@ -78,6 +78,7 @@
   <button onclick="convertToJson()">Convert</button>
 
   <div class="output" id="output"></div>
+  <button id="copyButton" style="display: none;" onclick="copyToClipboard()">Copy URL</button>
 </div>
 
 <script>
@@ -95,13 +96,26 @@
       const result = await response.json();
 
       if (response.ok) {
+        const url = `https://clearkey-api-ad4h.vercel.app/api/results?keyid=${keyId}&key=${key}`;
         document.getElementById('output').textContent = JSON.stringify(result, null, 2);
+        document.getElementById('copyButton').style.display = 'block'; // Show the copy button
+        document.getElementById('output').textContent += `\nGenerated URL: ${url}`;
+
+        // Open the URL in a new tab
+        window.open(url, '_blank');
       } else {
         document.getElementById('output').textContent = result.error || "Something went wrong!";
       }
     } catch (error) {
       alert("An error occurred while processing your request.");
     }
+  }
+
+  function copyToClipboard() {
+    const output = document.getElementById('output').textContent;
+    navigator.clipboard.writeText(output).then(() => {
+      alert('URL copied to clipboard!');
+    });
   }
 </script>
 
